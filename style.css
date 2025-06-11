@@ -2,6 +2,8 @@
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 body {
@@ -15,6 +17,9 @@ body {
 .container {
   height: 80svh;
   aspect-ratio: 9 / 16;
+  min-height: 0;
+  min-width: 0;
+  flex: 0 0 auto;
   background: black;
   border-radius: 20px;
   padding: 1rem;
@@ -24,20 +29,28 @@ body {
   align-items: center;
 }
 
-.display {
+.display-container {
   width: 100%;
+  background: blue;
   height: 25%;
+  flex: 0;
   display: flex;
   flex-wrap: nowrap;
-  justify-content: end;
-  /* background: blue; */
   align-items: end;
   font-size: 3.3rem;
   font-weight: 300;
   flex: 0 0 auto;
   color: rgb(244, 238, 238);
-  padding: 0 1rem;
-  box-sizing: border-box;
+  padding: 0px 0.9rem;
+  overflow-x: hidden;
+}
+
+.display {
+  width: 100%;
+  overflow-x: scroll;
+  /* background: yellow; */
+  display: flex;
+  justify-content: end;
 }
 
 .btns {
