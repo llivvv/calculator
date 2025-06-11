@@ -13,7 +13,8 @@ body {
 }
 
 .container {
-  width: 25%;
+  height: 80svh;
+  /* width: 25%; */
   aspect-ratio: 9 / 16;
   background: black;
   border-radius: 15px;
@@ -33,9 +34,55 @@ body {
   background: blue;
   align-items: end;
   font-size: 2rem;
+  flex: 0 0 auto;
 }
 
 .btns {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 0.5rem;
+  aspect-ratio: 4 / 5;
+}
+
+.left,
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.left {
+  background: yellow;
+}
+
+.right {
+  background: orange;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  background: purple;
+  width: 100%;
+  flex: 1;
+  gap: 0.5rem;
+}
+
+.btn {
+  height: 100%;
+  flex: 1;
+  font-size: 1.2rem;
+
+  /* aspect-ratio: 1 / 1;  */
+}
+// prev styles
+
+/* .btns {
   width: 100%;
   aspect-ratio: 4 / 5;
   background: green;
@@ -63,4 +110,4 @@ body {
 .btn-zero {
   height: 100%;
   flex: 2;
-}
+} */
