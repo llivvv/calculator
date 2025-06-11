@@ -1,7 +1,3 @@
-let operator;
-let a;
-let b;
-
 function add(a, b) {
   console.log(a + b);
 }
@@ -33,3 +29,10 @@ function operate(op, a, b) {
       divide(a, b);
   }
 }
+
+let operator;
+let a;
+let b;
+
+// keep track of whether user's last press was a num or operator or decimal etc.
+let prev;
