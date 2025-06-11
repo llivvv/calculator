@@ -36,6 +36,8 @@ body {
   font-weight: 300;
   flex: 0 0 auto;
   color: rgb(244, 238, 238);
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .btns {
