@@ -50,6 +50,13 @@ function intoPcntAndDisplay() {
   }
 }
 
+function flipAndDisplay() {
+  if (arrNum.length - 1 >= 0) {
+    arrNum[arrNum.length - 1] = -1 * arrNum[arrNum.length - 1];
+    display.innerText = arrNum[arrNum.length - 1];
+  }
+}
+
 function clear() {
   arrNum = [];
   arrOps = [];
@@ -93,3 +100,6 @@ decBtn.addEventListener("click", () => {
 
 const pcntBtn = document.querySelector(".btn-pcnt");
 pcntBtn.addEventListener("click", intoPcntAndDisplay);
+
+const flipBtn = document.querySelector(".btn-flip");
+flipBtn.addEventListener("click", flipAndDisplay);
