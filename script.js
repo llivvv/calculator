@@ -62,7 +62,7 @@ function flipNum(num) {
 }
 
 function flipAndDisplay() {
-  if (arrNum.length - 1 >= 1) {
+  if (arrNum.length >= 1) {
     negNumLast = arrNum[arrNum.length - 1];
     arrNum[arrNum.length - 1] = flipNum(arrNum[arrNum.length - 1]);
     display.innerText = arrNum[arrNum.length - 1];
