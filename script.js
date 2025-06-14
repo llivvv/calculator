@@ -17,6 +17,10 @@ function divide(a, b) {
 function operate(op, a, b) {
   switch (op) {
     case "add":
+      for (let i = 0; i < arrNum.length; i++) {
+        console.log(arrNum[i]);
+      }
+      console.log("addition performed");
       return add(a, b);
     case "subtract":
       return subtract(a, b);
@@ -28,7 +32,11 @@ function operate(op, a, b) {
 }
 
 function clickDisplay(numStr) {
-  if (prev == "num" || prev == "dec") {
+  if (isAtBeg) {
+    display.innerText = numStr;
+    arrNum[arrNum.length - 1] = parseFloat(display.innerText);
+    isAtBeg = false;
+  } else if (prev == "num" || prev == "dec" || isAtBeg) {
     display.innerText += numStr;
     arrNum[arrNum.length - 1] = parseFloat(display.innerText);
   } else {
@@ -73,34 +81,51 @@ function putNewOp(opName) {
 
 function processOp(opName) {
   // pressing an operation button right after you pressed another op button (excludes =)
-  if (opName === "equal") {
+  if (opName == "equal") {
+    if (arrOps.length == 1) {
+      console.log("it evaluated");
+      console.log(arrNum[0]);
+      console.log(arrNum[1]);
+      arrNum[0] = operate(arrOps[0], arrNum[0], arrNum[1]);
+      arrNum.pop();
+      display.innerText = arrNum[0];
+      console.log(arrNum.length);
+      prev = "num";
+      isDecAvail = true;
+    }
     if (arrOps.length == 2) {
       // cases: (+, /), (-, /)
       // ex. 5 + 2/2
       if (
-        (arrOps[0] === "add" || arrOps[0] === "subtract") &&
-        (arrOps[1] === "divide" || arrOps[1] === "multiply")
+        (arrOps[0] == "add" || arrOps[0] == "subtract") &&
+        (arrOps[1] == "divide" || arrOps[1] == "multiply")
       ) {
         arrNum[1] = operate(arrOps[1], arrNum[1], arrNum[2]);
         arrNum.pop();
         arrNum[0] = operate(arrOps[0], arrNum[0], arrNum[1]);
         arrNum.pop();
+        display.innerText = arrNum[arrNum.length - 1];
+        arrOps.pop();
+        arrOps.pop();
+        prev = "num";
+        isDecAvail = true;
       }
     }
-  }
-  if (prev === "op") {
+    mostRecentOp = null;
+  } else if (prev == "op") {
     // replace old op with the new op
     // ex. 5 /+, 5 +-
-    if (opName === "add" || opName === "subtract") {
+    if (opName == "add" || opName == "subtract") {
       replaceOp(opName);
-    } else if (opName === "divide" || opName === "multiply") {
-      if (mostRecentOp === "add" || "subtract") {
+    } else if (opName == "divide" || opName == "multiply") {
+      if (mostRecentOp == "add" || "subtract") {
         // check if there was a previous operation evaluated
         // ex. 5 + 2 +/ -> 7 +/ -> 7 - 2/
         // negNumLast = -2 // when do i update this?
         if (negNumLast != 0) {
           arrNum[0] = arrNum[arrNum.length - 1] + negNumLast;
           arrNum[1] = flipNum(negNumLast);
+          display.innerText = arrNum[1];
 
           putNewOp(opName);
           return;
@@ -110,14 +135,55 @@ function processOp(opName) {
       // handle cases: 5 +/, 5/*
       replaceOp(opName);
     }
-
-    // (arrOps[arrOps.length - 1] === "addition" ||
-    //   arrOps[arrOps.length - 1] === "subtraction") &&
-    // (opName === "addition" || opName === "subtraction")
-    //  {
-    // // replace the old op with the new op
-    // arrOps[arrOps.length - 1] = opName;
   } else {
+    // prev was not an operator
+    // ex. 5 + 2 +, 5 + 2/2 +,
+    if (mostRecentOp == "divide" || mostRecentOp == "multiply") {
+      // handles cases: 12/4/ = 3/, 12/4+ = 3+
+      arrNum[arrOps.length - 1] = operate(
+        mostRecentOp,
+        arrNum[arrOps.length - 1],
+        arrNum[arrOps.length]
+      );
+      arrNum.pop();
+      arrOps.pop();
+      if (!(opName == "divide" || opName == "multiply") && arrOps.length == 2) {
+        // aka there was a "+" or "-" before the divide or multiply
+        arrNum[arrOps.length - 1] = operate(
+          arrOps[arrOps.length - 1],
+          arrNum[arrOps.length - 1],
+          arrNum[arrOps.length]
+        );
+        arrNum.pop();
+        arrOps.pop();
+      }
+      display.innerText = arrNum[arrNum.length - 1];
+      replaceOp(opName);
+      prev = "op";
+      // if (arrOps.length = 2) {
+      //   // aka there was a "+" before the divide or multiply
+      //   arrNum[arrOps.length - 1] = operate(mostRecentOp, arrNum[arrOps.length - 1], arrNum[arrOps.length]);
+
+      // }
+    } else if (
+      // handles cases: 5 + 2 + -> 7 +
+      (mostRecentOp == "add" || mostRecentOp == "subtract") &&
+      (opName == "add" || opName == "subtract")
+    ) {
+      arrNum[arrOps.length - 1] = operate(
+        mostRecentOp,
+        arrNum[arrOps.length - 1],
+        arrNum[arrOps.length]
+      );
+      arrNum.pop();
+      display.innerText = arrNum[arrNum.length - 1];
+      replaceOp(opName);
+      prev = "op";
+    } else if (arrOps.length == 0) {
+      arrOps.push(opName);
+      console.log("i pressed add");
+      prev = "op";
+    }
   }
 }
 function clear() {
@@ -145,6 +211,7 @@ let prevOp = null;
 // keep track of whether user's last press was a num or operator or decimal etc.
 // choices: "num", "dec", "op", "null"
 let prev = null;
+let isAtBeg = true;
 let isDecAvail = true;
 
 // const opsMap = new Map();
