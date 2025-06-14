@@ -181,7 +181,7 @@ function processOp(opName) {
       display.innerText = arrNum[arrNum.length - 1];
       replaceOp(opName);
       prev = "op";
-    } else if (arrOps.length == 0) {
+    } else {
       putNewOp(opName);
       prev = "op";
     }
