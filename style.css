@@ -12,6 +12,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  background: rgb(24, 12, 69);
 }
 
 .container {
