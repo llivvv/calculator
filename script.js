@@ -78,9 +78,8 @@ function processOp(opName) {
       // cases: (+, /), (-, /)
       // ex. 5 + 2/2
       if (
-        ((arrOps[0] === "add" || arrOps[0] === "subtract") &&
-          arrOps[1] === "divide") ||
-        arrOps[1] === "multiply"
+        (arrOps[0] === "add" || arrOps[0] === "subtract") &&
+        (arrOps[1] === "divide" || arrOps[1] === "multiply")
       ) {
         arrNum[1] = operate(arrOps[1], arrNum[1], arrNum[2]);
         arrNum.pop();
