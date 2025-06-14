@@ -17,10 +17,8 @@ function divide(a, b) {
 function operate(op, a, b) {
   switch (op) {
     case "add":
-      for (let i = 0; i < arrNum.length; i++) {
-        console.log(arrNum[i]);
-      }
-      console.log("addition performed");
+      console.log(a);
+      console.log(b);
       return add(a, b);
     case "subtract":
       return subtract(a, b);
@@ -62,6 +60,7 @@ function flipNum(num) {
 }
 
 function flipAndDisplay() {
+  console.log("worked");
   if (arrNum.length >= 1) {
     negNumLast = arrNum[arrNum.length - 1];
     arrNum[arrNum.length - 1] = flipNum(arrNum[arrNum.length - 1]);
@@ -80,7 +79,7 @@ function putNewOp(opName) {
 }
 
 function processOp(opName) {
-  // pressing an operation button right after you pressed another op button (excludes =)
+  console.log(opName);
   if (opName == "equal") {
     if (arrOps.length == 1) {
       console.log("it evaluated");
@@ -114,6 +113,8 @@ function processOp(opName) {
       }
     }
     mostRecentOp = null;
+
+    // pressing an operation button right after you pressed another op button (excludes =)
   } else if (prev == "op") {
     // replace old op with the new op
     // ex. 5 /+, 5 +-
@@ -142,6 +143,7 @@ function processOp(opName) {
     // ex. 5 + 2 +, 5 + 2/2 +,
     if (mostRecentOp == "divide" || mostRecentOp == "multiply") {
       // handles cases: 12/4/ = 3/, 12/4+ = 3+
+      console.log("reached the non repeat div");
       arrNum[arrOps.length - 1] = operate(
         mostRecentOp,
         arrNum[arrOps.length - 1],
@@ -149,7 +151,7 @@ function processOp(opName) {
       );
       arrNum.pop();
       arrOps.pop();
-      if (!(opName == "divide" || opName == "multiply") && arrOps.length == 2) {
+      if (!(opName == "divide" || opName == "multiply") && arrOps.length == 1) {
         // aka there was a "+" or "-" before the divide or multiply
         arrNum[arrOps.length - 1] = operate(
           arrOps[arrOps.length - 1],
@@ -160,13 +162,9 @@ function processOp(opName) {
         arrOps.pop();
       }
       display.innerText = arrNum[arrNum.length - 1];
-      replaceOp(opName);
+      console.log(arrOps.length);
+      putNewOp(opName);
       prev = "op";
-      // if (arrOps.length = 2) {
-      //   // aka there was a "+" before the divide or multiply
-      //   arrNum[arrOps.length - 1] = operate(mostRecentOp, arrNum[arrOps.length - 1], arrNum[arrOps.length]);
-
-      // }
     } else if (
       // handles cases: 5 + 2 + -> 7 +
       (mostRecentOp == "add" || mostRecentOp == "subtract") &&
@@ -195,14 +193,12 @@ function clear() {
   clearBtn.innerText = "AC";
   display.innerText = "0";
   isAtBeg = true;
+  negNumLast = 0;
+  mostRecentOp = null;
+  prevOp = null;
 }
 
-let operator;
-// let a;
-// let b;
 let arrNum = [0];
-let Op1 = null;
-let Op2 = null;
 let negNumLast = 0;
 let arrOps = [];
 let mostRecentOp = null; // the most recently pressed op
@@ -216,8 +212,9 @@ let prev = null;
 let isAtBeg = true;
 let isDecAvail = true;
 
-// const opsMap = new Map();
-// opsMap.set("")
+const pcntBtn = document.querySelector(".btn-pcnt");
+pcntBtn.addEventListener("click", intoPcntAndDisplay);
+
 const display = document.querySelector(".display");
 const clearBtn = document.querySelector(".btn-clear");
 clearBtn.addEventListener("click", clear);
@@ -248,9 +245,6 @@ decBtn.addEventListener("click", () => {
     clearBtn.innerText = "C";
   }
 });
-
-const pcntBtn = document.querySelector(".btn-pcnt");
-pcntBtn.addEventListener("click", intoPcntAndDisplay);
 
 const flipBtn = document.querySelector(".btn-flip");
 flipBtn.addEventListener("click", flipAndDisplay);
