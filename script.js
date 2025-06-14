@@ -88,10 +88,12 @@ function processOp(opName) {
       console.log(arrNum[1]);
       arrNum[0] = operate(arrOps[0], arrNum[0], arrNum[1]);
       arrNum.pop();
+      arrOps.pop();
       display.innerText = arrNum[0];
       console.log(arrNum.length);
       prev = "num";
-      isDecAvail = true;
+      isDecAvail = false;
+      // isDecAvail = true;
     }
     if (arrOps.length == 2) {
       // cases: (+, /), (-, /)
@@ -180,8 +182,7 @@ function processOp(opName) {
       replaceOp(opName);
       prev = "op";
     } else if (arrOps.length == 0) {
-      arrOps.push(opName);
-      console.log("i pressed add");
+      putNewOp(opName);
       prev = "op";
     }
   }
@@ -193,6 +194,7 @@ function clear() {
   isDecAvail = true;
   clearBtn.innerText = "AC";
   display.innerText = "0";
+  isAtBeg = true;
 }
 
 let operator;
