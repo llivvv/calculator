@@ -8,11 +8,13 @@ let isAtBeg = true;
 let justEvaluatedEqual = false;
 let isAddSubtractEval = false; // does not include evaluations of additions or subtractions from equals
 let justEvaluatedOp = null;
-const oppOfOp = new Map();
-oppOfOp.set("add", "subtract");
-oppOfOp.set("subtract", "add");
-oppOfOp.set("multiply", "divide");
-oppOfOp.set("divide", "multiply");
+// const oppOfOp = new Map();
+const oppOfOp = new Map([
+  ["add", "subtract"],
+  ["subtract", "add"],
+  ["multiply", "divide"],
+  ["divide", "multiply"],
+]);
 let numLast = 0;
 
 // select elements
