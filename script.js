@@ -8,6 +8,8 @@ let isAtBeg = true;
 let justEvaluatedEqual = false;
 let isAddSubtractEval = false; // does not include evaluations of additions or subtractions from equals
 let justEvaluatedOp = null;
+let lastOp = null;
+let lastNum = null;
 // const oppOfOp = new Map();
 const oppOfOp = new Map([
   ["add", "subtract"],
@@ -181,10 +183,18 @@ function evalTwoOpsOnEqual() {
 }
 
 function processEqual() {
-  for (let i = 0; i < arrOps.length; i++) {
-    console.log(arrOps[i]);
+  // for (let i = 0; i < arrOps.length; i++) {
+  //   console.log(arrOps[i]);
+  // }
+  if (arrOps.length == 0 && lastOp != null) {
+    // eval equal again
+    let newRes = operate(lastOp, arrNum[0], lastNum);
+    arrNum[0] = newRes;
+    display.innerText = arrNum[0];
   }
   if (arrOps.length == 1) {
+    lastNum = arrNum[arrNum.length - 1];
+    lastOp = arrOps[arrOps.length - 1];
     evalSingleOpOnEqual();
   }
   if (arrOps.length == 2) {
@@ -194,6 +204,8 @@ function processEqual() {
       (arrOps[0] == "add" || arrOps[0] == "subtract") &&
       (arrOps[1] == "divide" || arrOps[1] == "multiply")
     ) {
+      lastNum = arrNum[arrNum.length - 1];
+      lastOp = arrOps[arrOps.length - 1];
       evalTwoOpsOnEqual();
     }
   }
@@ -305,9 +317,10 @@ function clear() {
   clearBtn.innerText = "AC";
   display.innerText = "0";
   isAtBeg = true;
-  // negNumLast = 0;
   mostRecentOp = null;
   justEvaluatedEqual = false;
   isAddSubtractEval = false;
-  // prevOp = null;
+  justEvaluatedOp = null;
+  lastOp = null;
+  lastNum = null;
 }
