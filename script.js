@@ -183,9 +183,6 @@ function evalTwoOpsOnEqual() {
 }
 
 function processEqual() {
-  // for (let i = 0; i < arrOps.length; i++) {
-  //   console.log(arrOps[i]);
-  // }
   if (arrOps.length == 0 && lastOp != null) {
     // eval equal again
     let newRes = operate(lastOp, arrNum[0], lastNum);
@@ -243,15 +240,6 @@ function processDoubleOpClick(opName) {
     replaceOp(opName);
   }
 }
-
-// this logic is off
-// function setNegNumLast() {
-//   if (mostRecentOp == "subtract") {
-//     negNumLast = arrNum[arrNum.length - 1];
-//   } else {
-//     negNumLast = flipNum(arrNum[arrNum.length - 1]);
-//   }
-// }
 
 function setNumLast() {
   numLast = arrNum[arrNum.length - 1];
