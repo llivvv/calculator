@@ -10,6 +10,7 @@ let isAddSubtractEval = false; // does not include evaluations of additions or s
 let justEvaluatedOp = null;
 let lastOp = null;
 let lastNum = null;
+let isError = false;
 // const oppOfOp = new Map();
 const oppOfOp = new Map([
   ["add", "subtract"],
@@ -30,29 +31,45 @@ const decBtn = document.querySelector(".btn-dec");
 const flipBtn = document.querySelector(".btn-flip");
 
 // add event listeners
-pcntBtn.addEventListener("click", intoPcntAndDisplay);
+pcntBtn.addEventListener("click", () => {
+  if (!isError) intoPcntAndDisplay();
+});
 clearBtn.addEventListener("click", clear);
+
 numBtns.forEach((numBtn) => {
   numBtn.addEventListener("click", () => {
-    clickDisplay(numBtn.innerText);
-    prev = "num";
-    clearBtn.innerText = "C";
+    if (!isError) {
+      console.log("this got processed");
+      clickDisplay(numBtn.innerText);
+      prev = "num";
+      clearBtn.innerText = "C";
+    }
   });
 });
 opBtns.forEach((opBtn) => {
-  opBtn.addEventListener("click", () => {
-    processOp(opBtn.id);
-  });
-});
-eqBtn.addEventListener("click", processEqual);
-decBtn.addEventListener("click", () => {
-  if (checkIsDecAvail()) {
-    clickDisplay(".");
-    prev = "dec";
-    clearBtn.innerText = "C";
+  if (!isError) {
+    opBtn.addEventListener("click", () => {
+      processOp(opBtn.id);
+    });
   }
 });
-flipBtn.addEventListener("click", flipAndDisplay);
+eqBtn.addEventListener("click", () => {
+  if (!isError) processEqual();
+});
+decBtn.addEventListener("click", () => {
+  if (!isError) {
+    if (checkIsDecAvail()) {
+      clickDisplay(".");
+      prev = "dec";
+      clearBtn.innerText = "C";
+    }
+  }
+});
+flipBtn.addEventListener("click", () => {
+  if (!isError) {
+    flipAndDisplay();
+  }
+});
 
 function add(a, b) {
   return a + b;
@@ -68,6 +85,7 @@ function multiply(a, b) {
 
 function divide(a, b) {
   if (b == 0) {
+    isError = true;
     return "Error";
   }
   return a / b;
@@ -179,7 +197,8 @@ function evalTwoOpsOnEqual() {
   calc();
   arrNum.pop();
   arrOps.pop();
-  evalSingleOpOnEqual();
+  if (!isError) evalSingleOpOnEqual();
+  // evalSingleOpOnEqual();
 }
 
 function processEqual() {
@@ -254,7 +273,11 @@ function processSingleOpClick(opName) {
     arrNum.pop();
     arrOps.pop();
     isAddSubtractEval = false;
-    if (!(opName == "divide" || opName == "multiply") && arrOps.length == 1) {
+    if (
+      !(opName == "divide" || opName == "multiply") &&
+      arrOps.length == 1 &&
+      !isError
+    ) {
       // aka there was a "+" or "-" before the divide or multiply
       calc();
       arrNum.pop();
@@ -311,4 +334,5 @@ function clear() {
   justEvaluatedOp = null;
   lastOp = null;
   lastNum = null;
+  isError = false;
 }
