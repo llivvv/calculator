@@ -84,6 +84,8 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
+  // if (b == 0 || a / b == "undefined")
+  console.log(a / b);
   if (b == 0) {
     isError = true;
     return "Error";
@@ -202,6 +204,26 @@ function evalTwoOpsOnEqual() {
 }
 
 function processEqual() {
+  if (arrNum.length == arrOps.length && arrNum.length >= 1) {
+    console.log("processed special case");
+    lastOp = arrOps[arrOps.length - 1];
+    lastNum = arrNum[arrNum.length - 1];
+
+    setNumLast();
+    justEvaluatedOp = arrOps[arrOps.length - 1];
+    arrNum[arrOps.length - 1] = operate(
+      arrOps[arrOps.length - 1],
+      arrNum[arrOps.length - 1],
+      arrNum[arrOps.length - 1]
+    );
+    arrOps.pop();
+    display.innerText = arrNum[0];
+    prev = "num";
+    console.log(`num length: ${arrNum.length}, ops length: ${arrOps.length}`);
+    mostRecentOp = null;
+    justEvaluatedEqual = true;
+    return;
+  }
   if (arrOps.length == 0 && lastOp != null) {
     // eval equal again
     let newRes = operate(lastOp, arrNum[0], lastNum);
