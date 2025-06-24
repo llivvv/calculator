@@ -9,9 +9,7 @@ let justEvaluatedEqual = false;
 let isAddSubtractEval = false; // does not include evaluations of additions or subtractions from equals
 let justEvaluatedOp = null;
 let lastOp = null;
-let lastNum = null;
 let isError = false;
-// const oppOfOp = new Map();
 const oppOfOp = new Map([
   ["add", "subtract"],
   ["subtract", "add"],
@@ -207,7 +205,6 @@ function processEqual() {
   if (arrNum.length == arrOps.length && arrNum.length >= 1) {
     console.log("processed special case");
     lastOp = arrOps[arrOps.length - 1];
-    lastNum = arrNum[arrNum.length - 1];
 
     setNumLast();
     justEvaluatedOp = arrOps[arrOps.length - 1];
@@ -226,12 +223,12 @@ function processEqual() {
   }
   if (arrOps.length == 0 && lastOp != null) {
     // eval equal again
-    let newRes = operate(lastOp, arrNum[0], lastNum);
+    let newRes = operate(lastOp, arrNum[0], numLast);
     arrNum[0] = newRes;
     display.innerText = arrNum[0];
   }
   if (arrOps.length == 1) {
-    lastNum = arrNum[arrNum.length - 1];
+    setNumLast();
     lastOp = arrOps[arrOps.length - 1];
     evalSingleOpOnEqual();
   }
@@ -242,7 +239,7 @@ function processEqual() {
       (arrOps[0] == "add" || arrOps[0] == "subtract") &&
       (arrOps[1] == "divide" || arrOps[1] == "multiply")
     ) {
-      lastNum = arrNum[arrNum.length - 1];
+      setNumLast();
       lastOp = arrOps[arrOps.length - 1];
       evalTwoOpsOnEqual();
     }
@@ -355,6 +352,6 @@ function clear() {
   isAddSubtractEval = false;
   justEvaluatedOp = null;
   lastOp = null;
-  lastNum = null;
   isError = false;
+  numLast = 0;
 }
