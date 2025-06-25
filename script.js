@@ -138,7 +138,8 @@ function intoPcntAndDisplay() {
   if (arrNum.length - 1 >= 0) {
     console.log("here?");
     arrNum[arrNum.length - 1] = arrNum[arrNum.length - 1] / 100;
-    display.innerText = arrNum[arrNum.length - 1];
+    resDisplay(arrNum.length - 1);
+    // display.innerText = arrNum[arrNum.length - 1];
   }
 }
 
@@ -181,12 +182,19 @@ function calc() {
   // arrOps.pop();
 }
 
-// function resDisplay(arrIdx) {
-//   let num = arrNum[arrIdx];
-//   if (num > 9999999) {
-//     num.toExponential(2);
-//   }
-// }
+function resDisplay(arrIdx) {
+  let num = arrNum[arrIdx];
+  let strNum = String(arrNum[arrIdx]);
+  if (num > 9999999) {
+    display.innerText = num.toExponential(2);
+  } else if (strNum.length >= 7) {
+    let resArr = strNum.split(".");
+    let digitsDeciAllowed = 6 - resArr[0];
+    display.innerText = num.toFixed(digitsDeciAllowed);
+  } else {
+    display.innerText = num;
+  }
+}
 
 function evalSingleOpOnEqual() {
   // arrNum[0] = operate(arrOps[0], arrNum[0], arrNum[1]);
@@ -195,7 +203,8 @@ function evalSingleOpOnEqual() {
   calc();
   arrNum.pop();
   arrOps.pop();
-  display.innerText = arrNum[0];
+  resDisplay(0);
+  // display.innerText = arrNum[0];
   prev = "num";
 }
 
@@ -226,7 +235,8 @@ function processEqual() {
       arrNum[arrOps.length - 1]
     );
     arrOps.pop();
-    display.innerText = arrNum[0];
+    resDisplay(0);
+    // display.innerText = arrNum[0];
     prev = "num";
     console.log(`num length: ${arrNum.length}, ops length: ${arrOps.length}`);
     mostRecentOp = null;
@@ -237,7 +247,8 @@ function processEqual() {
     // eval equal again
     let newRes = operate(lastOp, arrNum[0], numLast);
     arrNum[0] = newRes;
-    display.innerText = arrNum[0];
+    resDisplay(0);
+    // display.innerText = arrNum[0];
   }
   if (arrOps.length == 1) {
     setNumLast();
@@ -280,7 +291,8 @@ function processDoubleOpClick(opName) {
         arrOps[arrOps.length - 1] = justEvaluatedOp;
         // console.log(arrOps[0]);
         arrNum.push(numLast);
-        display.innerText = arrNum[1];
+        resDisplay(1);
+        // display.innerText = arrNum[1];
         putNewOp(opName);
         mostRecentOp = opName;
       }
@@ -315,7 +327,8 @@ function processSingleOpClick(opName) {
       arrOps.pop();
       isAddSubtractEval = true;
     }
-    display.innerText = arrNum[arrNum.length - 1];
+    resDisplay(arrNum.length - 1);
+    // display.innerText = arrNum[arrNum.length - 1];
     console.log(arrOps.length);
     putNewOp(opName);
     prev = "op";
@@ -328,7 +341,8 @@ function processSingleOpClick(opName) {
     isAddSubtractEval = true;
     calc();
     arrNum.pop();
-    display.innerText = arrNum[arrNum.length - 1];
+    resDisplay(arrNum.length - 1);
+    // display.innerText = arrNum[arrNum.length - 1];
     replaceOp(opName);
     prev = "op";
   } else {
