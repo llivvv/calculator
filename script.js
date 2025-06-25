@@ -113,13 +113,18 @@ function operate(op, a, b) {
 }
 
 function clickDisplay(numStr) {
+  console.log(prev);
   if (isAtBeg || justEvaluatedEqual) {
     display.innerText = numStr;
     arrNum[arrNum.length - 1] = parseFloat(display.innerText);
     isAtBeg = false;
   } else if (prev == "num" || prev == "dec" || isAtBeg) {
-    display.innerText += numStr;
-    arrNum[arrNum.length - 1] = parseFloat(display.innerText);
+    console.log(display.innerText.length);
+    if (display.innerText.length < 7) {
+      display.innerText += numStr;
+      arrNum[arrNum.length - 1] = parseFloat(display.innerText);
+      // overflowed = true;
+    }
   } else {
     display.innerText = numStr;
     arrNum.push(parseFloat(numStr));
@@ -175,6 +180,13 @@ function calc() {
   // arrNum.pop();
   // arrOps.pop();
 }
+
+// function resDisplay(arrIdx) {
+//   let num = arrNum[arrIdx];
+//   if (num > 9999999) {
+//     num.toExponential(2);
+//   }
+// }
 
 function evalSingleOpOnEqual() {
   // arrNum[0] = operate(arrOps[0], arrNum[0], arrNum[1]);

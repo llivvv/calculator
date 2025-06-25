@@ -44,7 +44,8 @@ body {
   flex: 0 0 auto;
   color: rgb(244, 238, 238);
   padding: 0px 0.9rem;
-  overflow-x: hidden;
+  text-overflow: clip;
+  /* overflow-x: hidden; */
 }
 
 .display {
@@ -118,7 +119,8 @@ body {
   color: #ffffff;
 }
 
-.btn-op:hover {
+.btn-op:hover,
+#equal:hover {
   background: hsl(33 81% 77%);
 }
 
