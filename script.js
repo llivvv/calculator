@@ -37,10 +37,12 @@ clearBtn.addEventListener("click", clear);
 numBtns.forEach((numBtn) => {
   numBtn.addEventListener("click", () => {
     if (!isError) {
-      console.log("this got processed");
-      clickDisplay(numBtn.innerText);
-      prev = "num";
-      clearBtn.innerText = "C";
+      if (numBtn.innerText != 0 || !isAtBeg) {
+        console.log("this got processed");
+        clickDisplay(numBtn.innerText);
+        prev = "num";
+        clearBtn.innerText = "C";
+      }
     }
   });
 });
@@ -114,12 +116,18 @@ function operate(op, a, b) {
 
 function clickDisplay(numStr) {
   console.log(prev);
+  // if (isAtBeg && numStr == "0") return;
   if (isAtBeg || justEvaluatedEqual) {
     display.innerText = numStr;
     arrNum[arrNum.length - 1] = parseFloat(display.innerText);
     isAtBeg = false;
   } else if (prev == "num" || prev == "dec" || isAtBeg) {
-    console.log(display.innerText.length);
+    if (
+      parseFloat(display.innerText) == 0 &&
+      numStr == "0" &&
+      !display.innerText.includes(".")
+    )
+      return;
     if (display.innerText.length < 7) {
       display.innerText += numStr;
       arrNum[arrNum.length - 1] = parseFloat(display.innerText);
@@ -353,6 +361,9 @@ function processSingleOpClick(opName) {
 
 // opName excludes equal
 function processOp(opName) {
+  justEvaluatedEqual = false;
+  isAtBeg = false;
+  console.log(arrNum[0]);
   console.log(opName);
   // pressing an operation button right after you pressed another op button (excludes =)
   if (prev == "op") {
@@ -361,9 +372,9 @@ function processOp(opName) {
     // prev was not an operator
     processSingleOpClick(opName);
   }
-  justEvaluatedEqual = false;
-  isAtBeg = false;
-  console.log(arrNum[0]);
+  // justEvaluatedEqual = false;
+  // isAtBeg = false;
+  // console.log(arrNum[0]);
 }
 
 function clear() {
