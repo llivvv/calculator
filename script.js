@@ -1,6 +1,5 @@
 // set up variables
 let arrNum = [0];
-// let negNumLast = 0;
 let arrOps = [];
 let mostRecentOp = null; // the most recently pressed op. arrOps[arrOps.length - 1]
 let prev = null; // prev choices: "num", "dec", "op", "null"
@@ -9,19 +8,23 @@ let justEvaluatedEqual = false;
 let isAddSubtractEval = false; // does not include evaluations of additions or subtractions from equals
 let justEvaluatedOp = null;
 let lastOp = null;
+let numLast = 0;
 let isError = false;
+
+// key: the original operator, value: its opposite
+// used for undoing operations
 const oppOfOp = new Map([
   ["add", "subtract"],
   ["subtract", "add"],
   ["multiply", "divide"],
   ["divide", "multiply"],
 ]);
-let numLast = 0;
 
 // select elements
 const display = document.querySelector(".display");
 const pcntBtn = document.querySelector(".btn-pcnt");
 const clearBtn = document.querySelector(".btn-clear");
+const delBtn = document.querySelector(".btn-del");
 const numBtns = document.querySelectorAll(".btn-num");
 const opBtns = document.querySelectorAll(".btn-op");
 const eqBtn = document.getElementById("equal");
@@ -33,7 +36,7 @@ pcntBtn.addEventListener("click", () => {
   if (!isError) intoPcntAndDisplay();
 });
 clearBtn.addEventListener("click", clear);
-
+delBtn.addEventListener("click", deleteNum);
 numBtns.forEach((numBtn) => {
   numBtn.addEventListener("click", () => {
     if (!isError) {
@@ -41,7 +44,7 @@ numBtns.forEach((numBtn) => {
         console.log("this got processed");
         clickDisplay(numBtn.innerText);
         prev = "num";
-        clearBtn.innerText = "C";
+        makeDelBtnVisible();
       }
     }
   });
@@ -61,7 +64,7 @@ decBtn.addEventListener("click", () => {
     if (checkIsDecAvail()) {
       clickDisplay(".");
       prev = "dec";
-      clearBtn.innerText = "C";
+      makeDelBtnVisible();
     }
   }
 });
@@ -98,56 +101,50 @@ function divide(a, b) {
 function operate(op, a, b) {
   switch (op) {
     case "add":
-      console.log(`added ${a} and ${b}`);
       isAddSubtractEval = true;
       return add(a, b);
     case "subtract":
-      console.log(`subtracted ${a} and ${b}`);
       isAddSubtractEval = true;
       return subtract(a, b);
     case "multiply":
-      console.log(`multiplied ${a} and ${b}`);
       return multiply(a, b);
     case "divide":
-      console.log(`divided ${a} and ${b}`);
       return divide(a, b);
   }
 }
 
 function clickDisplay(numStr) {
-  console.log(prev);
-  // if (isAtBeg && numStr == "0") return;
-  if (isAtBeg || justEvaluatedEqual) {
+  if ((isAtBeg || prev == "Op") && numStr == ".") {
+    display.innerText = "0.";
+    isAtBeg = false;
+    arrNum[arrNum.length - 1] = parseFloat(display.innerText);
+  } else if (isAtBeg || justEvaluatedEqual) {
     display.innerText = numStr;
     arrNum[arrNum.length - 1] = parseFloat(display.innerText);
     isAtBeg = false;
   } else if (prev == "num" || prev == "dec" || isAtBeg) {
+    // replace display 0 with the actual number
     if (
       parseFloat(display.innerText) == 0 &&
-      numStr == "0" &&
+      numStr != "." &&
       !display.innerText.includes(".")
     )
       return;
     if (display.innerText.length < 7) {
       display.innerText += numStr;
       arrNum[arrNum.length - 1] = parseFloat(display.innerText);
-      // overflowed = true;
     }
   } else {
     display.innerText = numStr;
     arrNum.push(parseFloat(numStr));
   }
-  // negNumLast = arrNum[arrNum.length - 1];
 }
 
 function intoPcntAndDisplay() {
-  //   console.log("here!");
-  //   console.log(arrNum.length - 1);
   if (arrNum.length - 1 >= 0) {
     console.log("here?");
     arrNum[arrNum.length - 1] = arrNum[arrNum.length - 1] / 100;
     resDisplay(arrNum.length - 1);
-    // display.innerText = arrNum[arrNum.length - 1];
   }
 }
 
@@ -156,9 +153,7 @@ function flipNum(num) {
 }
 
 function flipAndDisplay() {
-  console.log("worked");
   if (arrNum.length >= 1) {
-    // negNumLast = arrNum[arrNum.length - 1];
     arrNum[arrNum.length - 1] = flipNum(arrNum[arrNum.length - 1]);
     display.innerText = arrNum[arrNum.length - 1];
   }
@@ -186,10 +181,9 @@ function calc() {
     arrNum[arrOps.length - 1],
     arrNum[arrOps.length]
   );
-  // arrNum.pop();
-  // arrOps.pop();
 }
 
+// limits number of digits to display after calculations
 function resDisplay(arrIdx) {
   let num = arrNum[arrIdx];
   let strNum = String(arrNum[arrIdx]);
@@ -197,7 +191,7 @@ function resDisplay(arrIdx) {
     display.innerText = num.toExponential(2);
   } else if (strNum.length >= 7) {
     let resArr = strNum.split(".");
-    let digitsDeciAllowed = 6 - resArr[0];
+    let digitsDeciAllowed = 7 - resArr[0].length;
     display.innerText = num.toFixed(digitsDeciAllowed);
   } else {
     display.innerText = num;
@@ -205,29 +199,18 @@ function resDisplay(arrIdx) {
 }
 
 function evalSingleOpOnEqual() {
-  // arrNum[0] = operate(arrOps[0], arrNum[0], arrNum[1]);
-  // arrNum.pop();
-  // arrOps.pop();
   calc();
   arrNum.pop();
   arrOps.pop();
   resDisplay(0);
-  // display.innerText = arrNum[0];
   prev = "num";
 }
 
 function evalTwoOpsOnEqual() {
-  // arrNum[1] = operate(arrOps[1], arrNum[1], arrNum[2]);
-  // arrNum.pop();
-  // arrOps.pop();
-  for (let i = 0; i < arrNum.length; i++) {
-    console.log(`at idx: ${arrNum[i]}`);
-  }
   calc();
   arrNum.pop();
   arrOps.pop();
-  if (!isError) evalSingleOpOnEqual();
-  // evalSingleOpOnEqual();
+  isError ? resDisplay(arrNum.length - 1) : evalSingleOpOnEqual();
 }
 
 function processEqual() {
@@ -244,7 +227,6 @@ function processEqual() {
     );
     arrOps.pop();
     resDisplay(0);
-    // display.innerText = arrNum[0];
     prev = "num";
     console.log(`num length: ${arrNum.length}, ops length: ${arrOps.length}`);
     mostRecentOp = null;
@@ -256,7 +238,6 @@ function processEqual() {
     let newRes = operate(lastOp, arrNum[0], numLast);
     arrNum[0] = newRes;
     resDisplay(0);
-    // display.innerText = arrNum[0];
   }
   if (arrOps.length == 1) {
     setNumLast();
@@ -297,10 +278,8 @@ function processDoubleOpClick(opName) {
         // undo the previously evaluated addition/subtraction
         arrNum[0] = operate(oppOfOp.get(justEvaluatedOp), arrNum[0], numLast);
         arrOps[arrOps.length - 1] = justEvaluatedOp;
-        // console.log(arrOps[0]);
         arrNum.push(numLast);
         resDisplay(1);
-        // display.innerText = arrNum[1];
         putNewOp(opName);
         mostRecentOp = opName;
       }
@@ -336,11 +315,9 @@ function processSingleOpClick(opName) {
       isAddSubtractEval = true;
     }
     resDisplay(arrNum.length - 1);
-    // display.innerText = arrNum[arrNum.length - 1];
     console.log(arrOps.length);
     putNewOp(opName);
     prev = "op";
-    // isAddSubtractEval = false;
   } else if (
     // handles cases: 5 + 2 + -> 7 +
     (mostRecentOp == "add" || mostRecentOp == "subtract") &&
@@ -350,7 +327,6 @@ function processSingleOpClick(opName) {
     calc();
     arrNum.pop();
     resDisplay(arrNum.length - 1);
-    // display.innerText = arrNum[arrNum.length - 1];
     replaceOp(opName);
     prev = "op";
   } else {
@@ -372,16 +348,12 @@ function processOp(opName) {
     // prev was not an operator
     processSingleOpClick(opName);
   }
-  // justEvaluatedEqual = false;
-  // isAtBeg = false;
-  // console.log(arrNum[0]);
 }
 
 function clear() {
   arrNum = [0];
   arrOps = [];
   prev = null;
-  clearBtn.innerText = "AC";
   display.innerText = "0";
   isAtBeg = true;
   mostRecentOp = null;
@@ -391,4 +363,27 @@ function clear() {
   lastOp = null;
   isError = false;
   numLast = 0;
+}
+
+function makeACBtnVisible() {
+  clearBtn.classList.remove("hidden");
+  delBtn.classList.add("hidden");
+}
+
+function makeDelBtnVisible() {
+  delBtn.classList.remove("hidden");
+  clearBtn.classList.add("hidden");
+}
+
+// for "C" button
+function deleteNum() {
+  makeACBtnVisible();
+  if (prev == "num" && !isError && !justEvaluatedEqual) {
+    arrNum[arrNum.length - 1] = 0;
+    display.innerText = "0";
+  } else if (isError || justEvaluatedEqual) {
+    // delete btn acts like clear btn if error
+    makeACBtnVisible();
+    clear();
+  }
 }

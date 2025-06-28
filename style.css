@@ -132,3 +132,7 @@ body {
 .btn-grey:hover {
   background: hsl(0 0% 45%);
 }
+
+.hidden {
+  display: none;
+}
